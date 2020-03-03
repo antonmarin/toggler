@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css"
+          integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="container">
+    <div class="jumbotron">
+
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+        crossorigin="anonymous"></script>
+</body>
+
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script>
+    $(function () {
+        State = {{ .State}};
+
+        function createRow(entry) {
+            let togglerRow = $('<div class="row" />');
+            togglerRow.append($('<div class="col-md-6">'+entry.Title+'</div>'));
+            togglerRow.append($('<div class="col-md-3"><input type="checkbox" '+(entry.Value ? 'checked' : '') +' class="toggler" data-toggle="toggle" value="'+entry.Key+'"></div>'));
+            $('.jumbotron').append(togglerRow)
+        }
+
+        State.Envs.forEach(function(entry) {
+            console.log(entry);
+            createRow(entry)
+        });
+
+        $('.toggler').bootstrapToggle({
+            on: 'Busy',
+            off: 'Free'
+        });
+
+        $('.toggler').change(function () {
+            let state = {Value: $(this).prop('checked')};
+            let id = $(this).val();
+            console.log('toggler ' + id + ' enabled:' + state);
+            $.post("/update/" + id, JSON.stringify(state));
+        })
+    })
+</script>
+
+<!-- https://www.bootstraptoggle.com/ -->
+</html>
